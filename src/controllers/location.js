@@ -90,37 +90,37 @@ module.exports = {
     }
   },
 
-  // getAllLocations (req, res) {
-  //   Location.findAll({
-  //     include: [{
-  //       model: Population
-  //     }],
-  //     order: [
-  //       ['location_name', 'DESC']
-  //     ]
-  //   })
-  //   .then((locationPopulation) => {
-  //     const results = locationPopulation.map((locationDensity) => {
-  //       const male = locationDensity.Population.male
-  //       const female = locationDensity.Population.female
-  //       const total = male + female
-  //       const name = locationDensity.location_name
-  //       const parentIds = locationDensity.sub_location ? locationDensity.sub_location.split(',') : []
-  //       return {
-  //         name,
-  //         female,
-  //         male,
-  //         total,
-  //         parentIds
-  //       }
-  //     })
+  getAllLocations (req, res) {
+    Location.findAll({
+      include: [{
+        model: Population
+      }],
+      order: [
+        ['location_name', 'DESC']
+      ]
+    })
+    .then((locationPopulation) => {
+      const results = locationPopulation.map((locationDensity) => {
+        const male = locationDensity.Population.male
+        const female = locationDensity.Population.female
+        const total = male + female
+        const name = locationDensity.location_name
+        const parentIds = locationDensity.sub_location ? locationDensity.sub_location.split(',') : []
+        return {
+          name,
+          female,
+          male,
+          total,
+          parentIds
+        }
+      })
 
-  //     res.status(200).send({
-  //       results
-  //     })
-  //   })
-  //   .catch(error => res.status(400).send(error))
-  // },
+      res.status(200).send({
+        results
+      })
+    })
+    .catch(error => res.status(400).send(error))
+  },
 
   // updateLocation (req, res) {
   //   const {
@@ -292,38 +292,38 @@ module.exports = {
   // }
 }
 
-const getSubLocationIds = async (id) => {
-  let ids = []
-  await Location.findAll().then(loc => {
-    loc.forEach(item => {
-      if (item.sub_location && item.sub_location.indexOf(`${id}`) !== -1) {
-        ids.push(item.id)
-      }
-    })
-  })
-  return ids
-}
+// const getSubLocationIds = async (id) => {
+//   let ids = []
+//   await Location.findAll().then(loc => {
+//     loc.forEach(item => {
+//       if (item.sub_location && item.sub_location.indexOf(`${id}`) !== -1) {
+//         ids.push(item.id)
+//       }
+//     })
+//   })
+//   return ids
+// }
 
-const getPopulationDetails = async (ids) => {
-  let male = 0
-  let female = 0
-  let total = 0
-  await Population.findAll({
-    where: {
-      location_id: {
-        [Op.or]: ids
-      }
-    }
-  }).then(pop => {
-    pop.forEach(item => {
-      male += item.male
-      female += item.female
-      total += (item.male + item.female)
-    })
-  })
-  return {
-    female,
-    male,
-    total
-  }
-}
+// const getPopulationDetails = async (ids) => {
+//   let male = 0
+//   let female = 0
+//   let total = 0
+//   await Population.findAll({
+//     where: {
+//       location_id: {
+//         [Op.or]: ids
+//       }
+//     }
+//   }).then(pop => {
+//     pop.forEach(item => {
+//       male += item.male
+//       female += item.female
+//       total += (item.male + item.female)
+//     })
+//   })
+//   return {
+//     female,
+//     male,
+//     total
+//   }
+// }
