@@ -30,6 +30,14 @@ app.use(function (req, res, next) {
 })
 
 app.use('/api', indexRouter)
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use('/api', indexRouter)
+app.get('/', function (req, res) {
+  res.render('index', {
+    title: 'Hey',
+    message: 'Welcome to Population Management Systme!'
+  })
+})
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
