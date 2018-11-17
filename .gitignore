@@ -1,0 +1,7 @@
+/node_modules
+
+.Vscode
+
+.env
+
+.DS_Store

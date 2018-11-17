@@ -1,0 +1,40 @@
+{
+  "name": "pms",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./src/bin/www",
+    "migrate:test": "NODE_ENV=test sequelize db:migrate",
+    "migrate": "sequelize db:migrate",
+    "pretest": "NODE_ENV=test npm run migrate:test",
+    "test": "NODE_ENV=test mocha src/tests/*.spec.js --exit --compilers js:babel-core/register",
+    "test-dev": "mocha src/tests/*.spec.js --exit --compilers js:babel-core/register"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "chai": "^4.2.0",
+    "dotenv": "^6.1.0",
+    "ejs": "~2.5.7",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "mocha": "^5.2.0",
+    "morgan": "~1.9.0",
+    "pg": "^7.6.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.41.1",
+    "supertest": "^3.3.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "eslint": "^3.15.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-promise": "^3.4.1",
+    "eslint-plugin-standard": "^2.0.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}

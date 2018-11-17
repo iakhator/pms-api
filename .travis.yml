@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - "stable"
+
+cache:
+  directories:
+    - "$HOME/.npm"
+
+services:
+  - postgresql
+
+before_script:
+  # - createdb sms_app_test
+  - npm install
+  - npm install -g sequelize-cli
+
+script:
+  - npm test
+
+addons:
+  postgresql: "9.3"
