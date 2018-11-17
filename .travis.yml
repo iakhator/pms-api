@@ -10,7 +10,7 @@ services:
   - postgresql
 
 before_script:
-  # - createdb sms_app_test
+  # - createdb pms_test
   - npm install
   - npm install -g sequelize-cli
 

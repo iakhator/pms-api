@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
   'development': {
     'username': 'iakhator',
@@ -7,17 +9,10 @@ module.exports = {
     'dialect': 'postgres'
   },
   'test': {
-    'username': 'iakhator',
-    'password': 'pass1234',
-    'database': 'pms_test',
-    'host': '127.0.0.1',
-    'dialect': 'postgres'
+    use_env_variable: 'TEST_DB'
   },
   'production': {
-    'username': 'iakhator',
-    'password': 'pms-production',
-    'database': 'pms_production',
-    'host': '127.0.0.1',
-    'dialect': 'postgres'
+    use_env_variable: 'PRODUCTION_DB',
+    dialect: 'postgres'
   }
 }
