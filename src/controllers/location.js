@@ -219,77 +219,77 @@ module.exports = {
       })
   },
 
-  // deleteLocation (req, res) {
-  //   const { id } = req.params
-  //   if (isNaN(id)) {
-  //     return res.status(400).send({
-  //       message: 'Invalid location id'
-  //     })
-  //   }
-  //   getSubLocationIds(id).then(ids => {
-  //     ids.push(id)
-  //     Location.findById(id).then(loc => {
-  //       if (!loc) {
-  //         res.status(404).send({
-  //           message: 'Location not found'
-  //         })
-  //       } else {
-  //         const parentIds = loc.sub_location ? loc.sub_location.split(',') : []
-  //         parentIds.push(id)
-  //         if (parentIds.length) {
-  //           Population.findAll({
-  //             where: {
-  //               location_id: {
-  //                 [Op.or]: parentIds
-  //               }
-  //             }
-  //           }).then(pop => {
-  //             const result = pop.filter(value => value.location_id === parseInt(id))
-  //             const result2 = pop.filter(value => value.location_id !== parseInt(id))
-  //             result2.forEach(item => {
-  //               item.update({
-  //                 female: (item.female - result[0].female),
-  //                 male: (item.male - result[0].male),
-  //                 total: ((item.female - result[0].female) + (item.male - result[0].male))
-  //               }).then(() => {
-  //                 Population.destroy({
-  //                   where: {
-  //                     location_id: ids
-  //                   }
-  //                 }).then(() => {
-  //                   Location.destroy({
-  //                     where: {
-  //                       id: ids
-  //                     }
-  //                   })
-  //                   .then(() => res.status(200).send({
-  //                     message: 'Location deleted successfully'
-  //                   }))
-  //                   .catch((error) => res.status(400).send(error))
-  //                 })
-  //               })
-  //             })
-  //           })
-  //         } else {
-  //           Population.destroy({
-  //             where: {
-  //               location_id: id
-  //             }
-  //           }).then(() => {
-  //             Location.destroy({
-  //               where: {
-  //                 id: id
-  //               }
-  //             }).then(() => res.status(200).send({
-  //               message: 'Location deleted successfully'
-  //             }))
-  //             .catch((error) => res.status(400).send(error))
-  //           })
-  //         }
-  //       }
-  //     })
-  //   })
-  // }
+  deleteLocation (req, res) {
+    const { id } = req.params
+    if (isNaN(id)) {
+      return res.status(400).send({
+        message: 'Invalid location id'
+      })
+    }
+    getSubLocationIds(id).then(ids => {
+      ids.push(id)
+      Location.findById(id).then(loc => {
+        if (!loc) {
+          res.status(404).send({
+            message: 'Location not found'
+          })
+        } else {
+          const parentIds = loc.sub_location ? loc.sub_location.split(',') : []
+          parentIds.push(id)
+          if (parentIds.length) {
+            Population.findAll({
+              where: {
+                location_id: {
+                  [Op.or]: parentIds
+                }
+              }
+            }).then(pop => {
+              const result = pop.filter(value => value.location_id === parseInt(id))
+              const result2 = pop.filter(value => value.location_id !== parseInt(id))
+              result2.forEach(item => {
+                item.update({
+                  female: (item.female - result[0].female),
+                  male: (item.male - result[0].male),
+                  total: ((item.female - result[0].female) + (item.male - result[0].male))
+                }).then(() => {
+                  Population.destroy({
+                    where: {
+                      location_id: ids
+                    }
+                  }).then(() => {
+                    Location.destroy({
+                      where: {
+                        id: ids
+                      }
+                    })
+                    .then(() => res.status(200).send({
+                      message: 'Location deleted successfully'
+                    }))
+                    .catch((error) => res.status(400).send(error))
+                  })
+                })
+              })
+            })
+          } else {
+            Population.destroy({
+              where: {
+                location_id: id
+              }
+            }).then(() => {
+              Location.destroy({
+                where: {
+                  id: id
+                }
+              }).then(() => res.status(200).send({
+                message: 'Location deleted successfully'
+              }))
+              .catch((error) => res.status(400).send(error))
+            })
+          }
+        }
+      })
+    })
+  }
 }
 
 const getSubLocationIds = async (id) => {
