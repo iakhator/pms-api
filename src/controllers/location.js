@@ -122,102 +122,102 @@ module.exports = {
     .catch(error => res.status(400).send(error))
   },
 
-  // updateLocation (req, res) {
-  //   const {
-  //     name,
-  //     female,
-  //     male
-  //   } = req.body
-  //   const {
-  //     id
-  //   } = req.params
+  updateLocation (req, res) {
+    const {
+      name,
+      female,
+      male
+    } = req.body
+    const {
+      id
+    } = req.params
 
-  //   if (name === '' || female === '' || male === '') {
-  //     return res.status(400).send({
-  //       message: 'Request cannot be empty'
-  //     })
-  //   }
+    if (name === '' || female === '' || male === '') {
+      return res.status(400).send({
+        message: 'Request cannot be empty'
+      })
+    }
 
-  //   if (isNaN(male) || isNaN(female)) {
-  //     return res.status(400).send({
-  //       message: 'Invalid population'
-  //     })
-  //   }
+    if (isNaN(male) || isNaN(female)) {
+      return res.status(400).send({
+        message: 'Invalid population'
+      })
+    }
 
-  //   if (isNaN(id)) {
-  //     return res.status(400).send({
-  //       message: 'Invalid location id'
-  //     })
-  //   }
-  //   Location.findById(id)
-  //     .then(parent => {
-  //       if (!parent) {
-  //         return res.status(404).send({
-  //           message: 'Location not found'
-  //         })
-  //       }
-  //       const subLocation = parent.sub_location
-  //       if (name) {
-  //         parent.update({
-  //           location_name: name
-  //         })
-  //       }
-  //       const ids = subLocation ? subLocation.split(',') : []
-  //       const currentLocationPopulationId = parent.id
-  //       ids.push(currentLocationPopulationId)
-  //       Population.findAll({
-  //         where: {
-  //           location_id: {
-  //             [Op.or]: ids
-  //           }
-  //         }
-  //       }).then(pop => {
-  //         const result = pop.filter(item => item.location_id != currentLocationPopulationId)
-  //         const currentLocationPopulation = pop.filter(item => item.location_id === currentLocationPopulationId)
-  //         const newMale = male ? male : currentLocationPopulation[0].male
-  //         const newFemale = female ? female : currentLocationPopulation[0].female
-  //         const femaleDifference = newFemale - currentLocationPopulation[0].female
-  //         const maleDifference = newMale - currentLocationPopulation[0].male
-  //         if (currentLocationPopulation) {
+    if (isNaN(id)) {
+      return res.status(400).send({
+        message: 'Invalid location id'
+      })
+    }
+    Location.findById(id)
+      .then(parent => {
+        if (!parent) {
+          return res.status(404).send({
+            message: 'Location not found'
+          })
+        }
+        const subLocation = parent.sub_location
+        if (name) {
+          parent.update({
+            location_name: name
+          })
+        }
+        const ids = subLocation ? subLocation.split(',') : []
+        const currentLocationPopulationId = parent.id
+        ids.push(currentLocationPopulationId)
+        Population.findAll({
+          where: {
+            location_id: {
+              [Op.or]: ids
+            }
+          }
+        }).then(pop => {
+          const result = pop.filter(item => item.location_id != currentLocationPopulationId)
+          const currentLocationPopulation = pop.filter(item => item.location_id === currentLocationPopulationId)
+          const newMale = male ? male : currentLocationPopulation[0].male
+          const newFemale = female ? female : currentLocationPopulation[0].female
+          const femaleDifference = newFemale - currentLocationPopulation[0].female
+          const maleDifference = newMale - currentLocationPopulation[0].male
+          if (currentLocationPopulation) {
 
-  //         }
-  //         getSubLocationIds(parent.id).then(ids => {
-  //           if (ids.length) {
-  //             getPopulationDetails(ids).then(detail => {
-  //               currentLocationPopulation[0].update({
-  //                 female: (newFemale + detail.female),
-  //                 male: (newMale + detail.male),
-  //                 total: (newFemale + newMale) + detail.total
-  //               })
-  //             })
-  //           } else {
-  //             currentLocationPopulation[0].update({
-  //               female: newFemale,
-  //               male: newMale,
-  //               total: newFemale + newMale
-  //             })
-  //           }
-  //         })
+          }
+          getSubLocationIds(parent.id).then(ids => {
+            if (ids.length) {
+              getPopulationDetails(ids).then(detail => {
+                currentLocationPopulation[0].update({
+                  female: (newFemale + detail.female),
+                  male: (newMale + detail.male),
+                  total: (newFemale + newMale) + detail.total
+                })
+              })
+            } else {
+              currentLocationPopulation[0].update({
+                female: newFemale,
+                male: newMale,
+                total: newFemale + newMale
+              })
+            }
+          })
 
-  //         if (result.length === 0) {
-  //           res.status(200).send({
-  //             message: 'Location updated successfully'
-  //           })
-  //         }
-  //         result.forEach(item => {
-  //           item.update({
-  //             female: (item.female + femaleDifference),
-  //             male: (item.male + maleDifference),
-  //             total: ((item.male + maleDifference) + (item.female + femaleDifference))
-  //           }).then(() => {
-  //             res.status(200).send({
-  //               message: 'Location updated successfully'
-  //             })
-  //           })
-  //         })
-  //       })
-  //     })
-  // },
+          if (result.length === 0) {
+            res.status(200).send({
+              message: 'Location updated successfully'
+            })
+          }
+          result.forEach(item => {
+            item.update({
+              female: (item.female + femaleDifference),
+              male: (item.male + maleDifference),
+              total: ((item.male + maleDifference) + (item.female + femaleDifference))
+            }).then(() => {
+              res.status(200).send({
+                message: 'Location updated successfully'
+              })
+            })
+          })
+        })
+      })
+  },
 
   // deleteLocation (req, res) {
   //   const { id } = req.params
@@ -292,38 +292,38 @@ module.exports = {
   // }
 }
 
-// const getSubLocationIds = async (id) => {
-//   let ids = []
-//   await Location.findAll().then(loc => {
-//     loc.forEach(item => {
-//       if (item.sub_location && item.sub_location.indexOf(`${id}`) !== -1) {
-//         ids.push(item.id)
-//       }
-//     })
-//   })
-//   return ids
-// }
+const getSubLocationIds = async (id) => {
+  let ids = []
+  await Location.findAll().then(loc => {
+    loc.forEach(item => {
+      if (item.sub_location && item.sub_location.indexOf(`${id}`) !== -1) {
+        ids.push(item.id)
+      }
+    })
+  })
+  return ids
+}
 
-// const getPopulationDetails = async (ids) => {
-//   let male = 0
-//   let female = 0
-//   let total = 0
-//   await Population.findAll({
-//     where: {
-//       location_id: {
-//         [Op.or]: ids
-//       }
-//     }
-//   }).then(pop => {
-//     pop.forEach(item => {
-//       male += item.male
-//       female += item.female
-//       total += (item.male + item.female)
-//     })
-//   })
-//   return {
-//     female,
-//     male,
-//     total
-//   }
-// }
+const getPopulationDetails = async (ids) => {
+  let male = 0
+  let female = 0
+  let total = 0
+  await Population.findAll({
+    where: {
+      location_id: {
+        [Op.or]: ids
+      }
+    }
+  }).then(pop => {
+    pop.forEach(item => {
+      male += item.male
+      female += item.female
+      total += (item.male + item.female)
+    })
+  })
+  return {
+    female,
+    male,
+    total
+  }
+}
