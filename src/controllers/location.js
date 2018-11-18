@@ -227,16 +227,17 @@ module.exports = {
       })
     }
     getSubLocationIds(id).then(ids => {
-      ids.push(id)
+
+      ids.push(parseInt(id))
+
       Location.findById(id).then(loc => {
         if (!loc) {
-          res.status(404).send({
+          return res.status(404).send({
             message: 'Location not found'
           })
         } else {
-          const parentIds = loc.sub_location ? loc.sub_location.split(',') : []
-          parentIds.push(id)
-          if (parentIds.length) {
+          const parentIds = ids || []
+          if (parentIds.length > 1) {
             Population.findAll({
               where: {
                 location_id: {

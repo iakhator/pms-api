@@ -1,0 +1,281 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Location Population Management API",
+    "description": "Location Population API help you manage population in a given location",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "population-ms-api.herokuapp.com",
+  "basePath": "/api",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/locations": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Get all Locations with corresponding Resident",
+        "description": "Get All Locations",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "locations": {
+                  "results": [
+                    {
+                      "name": "Yaba",
+                      "female": 1,
+                      "male": 2,
+                      "total": 3,
+                      "parentIds": [
+                        "26",
+                        "27"
+                      ]
+                    },
+                    {
+                      "name": "Bariga",
+                      "female": 14,
+                      "male": 14,
+                      "total": 28,
+                      "parentIds": [
+                        "26"
+                      ]
+                    },
+                    {
+                      "name": "Shomolu",
+                      "female": 26,
+                      "male": 24,
+                      "total": 50,
+                      "parentIds": []
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/location": {
+      "post": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Create new location, Parent or sub-parent location",
+        "description": "Create new location and population",
+        "parameters": [{
+          "name": "location",
+          "in": "body",
+          "description": "Location and residents we want to create",
+          "schema": {
+            "$ref": "#/definitions/Location"
+          }
+        }],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "summary": "Add New Location",
+            "description": "New Location is created",
+            "examples": {
+              "application/json": {
+                "location": {
+                  "id": 76,
+                  "location_id": 84,
+                  "male": 2,
+                  "female": 4,
+                  "total": 6,
+                  "updatedAt": "2018-11-18T10:09:36.361Z",
+                  "createdAt": "2018-11-18T10:09:36.361Z"
+                },
+                "name": "Kebbi",
+                "message": "Location created successfully"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "examples": {
+              "application/json": {
+                "message": "Invalid population"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "examples": {
+              "application/json": {
+                "message": "Parent with that id does not exist"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Location"
+            }
+          }
+        }
+      }
+    },
+    "/location/{id}": {
+      "put": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Update location by id",
+        "description": "update location",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "id of the location updated",
+          "required": true,
+          "type": "integer"
+        }, {
+          "name": "name",
+          "in": "formData",
+          "description": "name of the location",
+          "required": false,
+          "type": "string"
+        }, {
+          "name": "male",
+          "in": "formData",
+          "description": "male population",
+          "required": false,
+          "type": "integer"
+        }, {
+         "name": "female",
+         "in": "formData",
+         "description": "female population",
+         "required": false,
+         "type": "integer"
+       }],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "Location successfully updated"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Not found",
+            "examples": {
+              "application/json": {
+                "message": "Location not found"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Delete locations by Id",
+        "description": "delete locations",
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "update location by id",
+          "required": true,
+          "type": "integer"
+        }],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "Location deleted successfully"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "examples": {
+              "application/json": {
+                "message": "Invalid location id"
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "examples": {
+              "application/json": {
+                "message": "Location not found"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Location": {
+      "required": [
+        "name",
+        "male",
+        "female"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "uniqueItems": true,
+          "examples": "Abuja"
+        },
+        "parentId": {
+          "type": "integer",
+          "example": 1
+        },
+        "male": {
+          "type": "integer",
+          "examples": 10
+        },
+        "female": {
+          "type": "integer",
+          "examples": 11
+        }
+      }
+    }
+  }
+}

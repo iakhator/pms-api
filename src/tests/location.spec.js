@@ -225,7 +225,7 @@ describe('Location Api', () => {
           .end((err, res) => {
             expect(res.status).to.equal(200)
             expect(res.body.message).to.equal('Location deleted successfully')
-            done()
+            // done()
           })
       })
 

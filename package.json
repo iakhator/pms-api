@@ -11,9 +11,9 @@
     "test-dev": "mocha src/tests/*.spec.js --exit --compilers js:babel-core/register"
   },
   "dependencies": {
+    "chai": "^4.2.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
-    "chai": "^4.2.0",
     "dotenv": "^6.1.0",
     "ejs": "~2.5.7",
     "express": "~4.16.0",
@@ -23,7 +23,8 @@
     "pg": "^7.6.1",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.41.1",
-    "supertest": "^3.3.0"
+    "supertest": "^3.3.0",
+    "swagger-ui-express": "^4.0.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
