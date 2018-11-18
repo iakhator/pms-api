@@ -3,6 +3,8 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
+var swaggerUi = require('swagger-ui-express')
+var swaggerDocument = require('./swagger.json')
 
 var indexRouter = require('./src/routes/index')
 
@@ -29,9 +31,9 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/api', indexRouter)
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-app.use('/api', indexRouter)
+
 app.get('/', function (req, res) {
   res.render('index', {
     title: 'Hey',

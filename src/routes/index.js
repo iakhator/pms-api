@@ -8,5 +8,4 @@ router.get('/locations', locationController.getAllLocations)
 router.put('/location/:id', locationController.updateLocation)
 router.delete('/location/:id', locationController.deleteLocation)
 
-
 module.exports = router
