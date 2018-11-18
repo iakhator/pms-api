@@ -9,12 +9,7 @@ module.exports = {
     'dialect': 'postgres'
   },
   'test': {
-    // use_env_variable: 'TEST_DB'
-    'username': 'iakhator',
-    'password': 'pass1234',
-    'database': 'pms_test',
-    'host': '127.0.0.1',
-    'dialect': 'postgres'
+    use_env_variable: 'TEST_DB'
   },
   'production': {
     use_env_variable: 'PRODUCTION_DB',
