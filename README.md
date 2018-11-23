@@ -55,7 +55,17 @@ This API is built with the following technologies;
 - Change into the directory `$ cd /pms-api`
 - Install all required dependencies with `$ npm install`
 - Create a `.env` file in your root directory as described in `.env.sample` file
-- Start the app with `npm start`
+
+## Start for development/Local
+```
+npm start
+it should run on `localhost:3000`
+```
+
+## Documentation
+```
+Run on `localhost:3000/api-doc`
+```
 
 ## Testing
 
