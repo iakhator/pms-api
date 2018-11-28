@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(function (req, res, next) {
   const _send = res.send
-  const sent = false
+  let sent = false
   res.send = function (data) {
     if (sent) return
     _send.bind(res)(data)
@@ -37,7 +37,7 @@ app.use('/api', indexRouter)
 app.get('/', function (req, res) {
   res.render('index', {
     title: 'Hey',
-    message: 'Welcome to Population Management Systme!'
+    message: 'Welcome to Population Management System!'
   })
 })
 
