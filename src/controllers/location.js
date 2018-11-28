@@ -229,16 +229,16 @@ module.exports = {
       })
     }
     Location.findById(id).then(loc => {
-      const ids = loc.sub_location ? loc.sub_location.split(',') : []
-      ids.push(id)
-      const newIds = ids.map(item => {
-        return parseInt(item)
-      })
       if (!loc) {
         return res.status(404).send({
           message: 'Location not found'
         })
       } else {
+        const ids = loc.sub_location ? loc.sub_location.split(',') : []
+        ids.push(id)
+        const newIds = ids.map(item => {
+          return parseInt(item)
+        })
         const parentIds = newIds
         if (parentIds.length) {
           Population.findAll({
