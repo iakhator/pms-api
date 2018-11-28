@@ -56,16 +56,13 @@ This API is built with the following technologies;
 - Install all required dependencies with `$ npm install`
 - Create a `.env` file in your root directory as described in `.env.sample` file
 
-## Start for development/Local
-```
-npm start
-it should run on `localhost:3000`
-```
+## Set up Database
 
-## Documentation
-```
-Run on `localhost:3000/api-doc`
-```
+- open your termal and run `psql postgres -U <username>`
+- next you create the database using `postgres=> CREATE DATABASE <database>`
+- grant user all priivileges to database `postgres=> GRANT ALL PRIVILEGES ON DATABASE <database> TO <username>`
+- quit `postgres=> \q`
+- run migration `sequelize db:migrate`
 
 ## Testing
 
