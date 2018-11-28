@@ -18,7 +18,7 @@ module.exports = {
       })
     }
 
-    if (isNaN(male) || isNaN(female)) {
+    if (isNaN(male) || isNaN(female) || male < 0 || female < 0) {
       return res.status(400).send({
         message: 'Invalid population'
       })
@@ -66,7 +66,7 @@ module.exports = {
               name: newLocation.location_name,
               message: 'Location created successfully'
             }))
-            .catch(error => res.status(400).send(error))
+              .catch(error => res.status(400).send(error))
           })
         })
     } else {
@@ -85,7 +85,7 @@ module.exports = {
           name: newLocation.location_name,
           message: 'Location created successfully'
         }))
-        .catch(error => res.status(400).send(error))
+          .catch(error => res.status(400).send(error))
       })
     }
   },
@@ -96,30 +96,30 @@ module.exports = {
         model: Population
       }],
       order: [
-        ['location_name', 'DESC']
+          ['location_name', 'DESC']
       ]
     })
-    .then((locationPopulation) => {
-      const results = locationPopulation.map((locationDensity) => {
-        const male = locationDensity.Population.male
-        const female = locationDensity.Population.female
-        const total = male + female
-        const name = locationDensity.location_name
-        const parentIds = locationDensity.sub_location ? locationDensity.sub_location.split(',') : []
-        return {
-          name,
-          female,
-          male,
-          total,
-          parentIds
-        }
-      })
+      .then((locationPopulation) => {
+        const results = locationPopulation.map((locationDensity) => {
+          const male = locationDensity.Population.male
+          const female = locationDensity.Population.female
+          const total = male + female
+          const name = locationDensity.location_name
+          const parentIds = locationDensity.sub_location ? locationDensity.sub_location.split(',') : []
+          return {
+            name,
+            female,
+            male,
+            total,
+            parentIds
+          }
+        })
 
-      res.status(200).send({
-        results
+        res.status(200).send({
+          results
+        })
       })
-    })
-    .catch(error => res.status(400).send(error))
+      .catch(error => res.status(400).send(error))
   },
 
   updateLocation (req, res) {
@@ -138,7 +138,7 @@ module.exports = {
       })
     }
 
-    if (isNaN(male) || isNaN(female)) {
+    if (isNaN(male) || isNaN(female) || male < 0 || female < 0) {
       return res.status(400).send({
         message: 'Invalid population'
       })
@@ -174,8 +174,8 @@ module.exports = {
         }).then(pop => {
           const result = pop.filter(item => item.location_id != currentLocationPopulationId)
           const currentLocationPopulation = pop.filter(item => item.location_id === currentLocationPopulationId)
-          const newMale = male ? male : currentLocationPopulation[0].male
-          const newFemale = female ? female : currentLocationPopulation[0].female
+          const newMale = male || currentLocationPopulation[0].male
+          const newFemale = female || currentLocationPopulation[0].female
           const femaleDifference = newFemale - currentLocationPopulation[0].female
           const maleDifference = newMale - currentLocationPopulation[0].male
           if (currentLocationPopulation) {
@@ -220,75 +220,85 @@ module.exports = {
   },
 
   deleteLocation (req, res) {
-    const { id } = req.params
+    const {
+      id
+    } = req.params
     if (isNaN(id)) {
       return res.status(400).send({
         message: 'Invalid location id'
       })
     }
-    getSubLocationIds(id).then(ids => {
-
-      ids.push(parseInt(id))
-
-      Location.findById(id).then(loc => {
-        if (!loc) {
-          return res.status(404).send({
-            message: 'Location not found'
-          })
-        } else {
-          const parentIds = ids || []
-          if (parentIds.length > 1) {
-            Population.findAll({
-              where: {
-                location_id: {
-                  [Op.or]: parentIds
-                }
+    Location.findById(id).then(loc => {
+      if (!loc) {
+        return res.status(404).send({
+          message: 'Location not found'
+        })
+      } else {
+        const ids = loc.sub_location ? loc.sub_location.split(',') : []
+        ids.push(id)
+        const newIds = ids.map(item => {
+          return parseInt(item)
+        })
+        const parentIds = newIds
+        if (parentIds.length) {
+          Population.findAll({
+            where: {
+              location_id: {
+                [Op.or]: parentIds
               }
-            }).then(pop => {
-              const result = pop.filter(value => value.location_id === parseInt(id))
-              const result2 = pop.filter(value => value.location_id !== parseInt(id))
-              result2.forEach(item => {
-                item.update({
-                  female: (item.female - result[0].female),
-                  male: (item.male - result[0].male),
-                  total: ((item.female - result[0].female) + (item.male - result[0].male))
-                }).then(() => {
-                  Population.destroy({
-                    where: {
-                      location_id: ids
+            }
+          }).then(pop => {
+            const result = pop.filter(value => value.location_id === parseInt(id))
+            const result2 = pop.filter(value => value.location_id !== parseInt(id))
+            if (!result2.length) {
+              getSubLocationIds(id).then((currentIds) => {
+                currentIds.push(parseInt(id))
+                Population.destroy({
+                  where: {
+                    location_id: {
+                      [Op.or]: currentIds
                     }
-                  }).then(() => {
-                    Location.destroy({
-                      where: {
-                        id: ids
+                  }
+                }).then(() => {
+                  Location.destroy({
+                    where: {
+                      id: {
+                        [Op.or]: currentIds
                       }
-                    })
-                    .then(() => res.status(200).send({
-                      message: 'Location deleted successfully'
-                    }))
-                    .catch((error) => res.status(400).send(error))
+                    }
+                  }).then(() => res.status(200).send({
+                    message: 'Location deleted successfully'
+                  }))
+                  .catch((error) => res.status(400).send(error))
+                })
+              })
+            }
+            result2.forEach(item => {
+              item.update({
+                female: (item.female - result[0].female),
+                male: (item.male - result[0].male),
+                total: ((item.female - result[0].female) + (item.male - result[0].male))
+              }).then(() => {
+                Population.destroy({
+                  where: {
+                    location_id: id
+                  }
+                }).then(() => {
+                  Location.destroy({
+                    where: {
+                      id: id
+                    }
                   })
+                  .then(() => res.status(200).send({
+                    message: 'Location deleted successfully'
+                  }))
+                  .catch((error) => res.status(400).send(error))
                 })
               })
             })
-          } else {
-            Population.destroy({
-              where: {
-                location_id: id
-              }
-            }).then(() => {
-              Location.destroy({
-                where: {
-                  id: id
-                }
-              }).then(() => res.status(200).send({
-                message: 'Location deleted successfully'
-              }))
-              .catch((error) => res.status(400).send(error))
-            })
-          }
+          })
         }
-      })
+      }
     })
   }
 }

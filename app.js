@@ -1,14 +1,14 @@
-var createError = require('http-errors')
-var express = require('express')
-var path = require('path')
-var cookieParser = require('cookie-parser')
-var logger = require('morgan')
-var swaggerUi = require('swagger-ui-express')
-var swaggerDocument = require('./swagger.json')
+const createError = require('http-errors')
+const express = require('express')
+const path = require('path')
+const cookieParser = require('cookie-parser')
+const logger = require('morgan')
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json')
 
-var indexRouter = require('./src/routes/index')
+const indexRouter = require('./src/routes/index')
 
-var app = express()
+const app = express()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'src/views'))
@@ -21,8 +21,8 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(function (req, res, next) {
-  var _send = res.send
-  var sent = false
+  const _send = res.send
+  let sent = false
   res.send = function (data) {
     if (sent) return
     _send.bind(res)(data)
@@ -37,7 +37,7 @@ app.use('/api', indexRouter)
 app.get('/', function (req, res) {
   res.render('index', {
     title: 'Hey',
-    message: 'Welcome to Population Management Systme!'
+    message: 'Welcome to Population Management System!'
   })
 })
 
