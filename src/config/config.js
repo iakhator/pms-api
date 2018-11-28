@@ -2,11 +2,7 @@ require('dotenv').config()
 
 module.exports = {
   'development': {
-    'username': 'iakhator',
-    'password': 'pass1234',
-    'database': 'pms_development',
-    'host': '127.0.0.1',
-    'dialect': 'postgres'
+    use_env_variable: 'DEVELOPMENT_DB'
   },
   'test': {
     use_env_variable: 'TEST_DB'
