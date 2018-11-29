@@ -54,15 +54,38 @@ This API is built with the following technologies;
 - Clone the repository `$ git clone https://github.com/iakhator/pms-api.git`
 - Change into the directory `$ cd /pms-api`
 - Install all required dependencies with `$ npm install`
-- Create a `.env` file in your root directory as described in `.env.sample` file
 
 ## Set up Database
 
-- open your termal and run `psql postgres -U <username>`
-- next you create the database using `postgres=> CREATE DATABASE <database>`
-- grant user all priivileges to database `postgres=> GRANT ALL PRIVILEGES ON DATABASE <database> TO <username>`
-- quit `postgres=> \q`
+- run `psql postgres --u postgres` to login into postgres
+- create a role `CREATE ROLE <username> WITH LOGIN PASSWORD '<password>';`
+- alter the role for the new user `ALTER ROLE <username> CREATEDB;`
+- quit postgres `\q`
+- run `psql postgres -U <username>;`
+- next create the database using `postgres=> CREATE DATABASE <database>;`
+- grant user all priivileges to database `postgres=> GRANT ALL PRIVILEGES ON DATABASE <database> TO <username>;`
+- quit postgres `\q`
+- Create a `.env` file in your root directory as described in `.env-sample` file and replace the data with the database credentials you just created
 - run migration `sequelize db:migrate`
+
+## Start for development/Local
+```
+npm start
+it should run on `localhost:3000`
+```
+
+## Documentation
+```
+Run on `localhost:3000/api-docs`
+```
+
+## Testing api with Swagger
+
+- To test on local
+```
+open `swagger.json` change `host` to `host:localhost:3000`
+change `https` to `http` in `localhost:3000/api-docs`
+```
 
 ## Testing
 
